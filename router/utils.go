@@ -1,4 +1,4 @@
-package routes
+package router
 
 func PanicIf(err error) {
 	if err != nil {
