@@ -5,23 +5,16 @@ import (
 	"fmt"
 	"net/http"
 	"io/ioutil"
+	"crypto/md5"
+	"encoding/hex"
+	"github.com/gophergala/not_golang_experts/model"
 )
 
-type Page struct {
-	Url					string
-	CheckedAt		time.Time
-	HTMLString	string
-}
-
 var stopchannel		chan bool
-var pagestocheck	[]*Page
 var ticker				*time.Ticker
 
 func StartObserving(stopped chan bool) {
 	stopchannel = stopped
-	pagestocheck = append(pagestocheck, &Page{"http://swanros.com/about/", time.Now(), ""}, &Page{"http://swanros.com/contact/", time.Now(), ""} )
-
-	fmt.Printf("%v\n\n", pagestocheck)
 
 	ticker = time.NewTicker(time.Millisecond * 1500) // 1.5 secs
 
@@ -35,21 +28,26 @@ func StopObserving() {
 
 func observe() {
 	for t := range ticker.C {
+		pagestocheck := model.PagesToCheck()
 		for _, page := range pagestocheck {
 			fmt.Printf("Checking page: %v - %v\n", page.Url, t)
 			resultchan := make(chan string)
 			go requestHTML(*page, resultchan)
 
 			resultString := <-resultchan
-			if page.HTMLString != resultString {
-				fmt.Printf("\n\n%v has a change!\n\n", page.Url)
-				page.HTMLString = resultString
+			if page.HtmlString != resultString {
+				fmt.Printf("%v has a change!\n\n", page.Url)
+				page.HtmlString = resultString
+			}else{
+				page.LastCheckedAt = time.Now()
 			}
+
+			page.Save()
 		}
 	}
 }
 
-func requestHTML(p Page, result chan string) {
+func requestHTML(p model.Page, result chan string) {
 	res, err := http.Get(p.Url)
 
 	if err!=nil {
@@ -60,6 +58,9 @@ func requestHTML(p Page, result chan string) {
 		if err!=nil {
 			panic(err)
 		}
-		result <- string(html)
+
+		hasher := md5.New()
+		hasher.Write([]byte(html))
+		result <- hex.EncodeToString(hasher.Sum(nil))
 	}
 }
