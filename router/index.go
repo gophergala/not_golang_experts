@@ -1,4 +1,4 @@
-package routes
+package router
 
 import (
 	"encoding/json"
@@ -11,5 +11,6 @@ func Index(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
+
 	res.Write(json)
 }
