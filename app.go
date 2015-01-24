@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"github.com/gophergala/not_golang_experts/worker"
+)
 
 func main() {
-  fmt.Println("Hello world!!!")
+	stopped := make(chan bool, 1)
+	worker.StartObserving(stopped)
+
+	<-stopped
 }
