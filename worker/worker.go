@@ -23,7 +23,7 @@ func StartObserving(stopped chan bool) {
 
 	fmt.Printf("%v\n\n", pagestocheck)
 
-	ticker = time.NewTicker(time.Millisecond * 5000) // 1.5 secs
+	ticker = time.NewTicker(time.Millisecond * 1500) // 1.5 secs
 
 	go observe()
 }
@@ -42,7 +42,7 @@ func observe() {
 
 			resultString := <-resultchan
 			if page.HTMLString != resultString {
-				fmt.Printf("%v has a change!\n\n", page.Url)
+				fmt.Printf("\n\n%v has a change!\n\n", page.Url)
 				page.HTMLString = resultString
 			}
 		}
