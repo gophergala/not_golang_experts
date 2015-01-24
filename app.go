@@ -9,7 +9,7 @@ import (
 
 func main() {
 	db := conf.SetupDB()
-	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.User{}, &model.Page{})
 
 	http.ListenAndServe(":3000", router.GetRoutes())
 }
