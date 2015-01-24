@@ -1,7 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/gophergala/not_golang_experts/conf"
+	"github.com/gophergala/not_golang_experts/model"
+)
 
 func main() {
-  fmt.Println("Hello world!!!")
+	db := conf.SetupDB()
+	db.AutoMigrate(&model.User{})
+
+	fmt.Println("Hello world!!!")
 }
