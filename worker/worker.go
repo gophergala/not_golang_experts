@@ -31,10 +31,11 @@ func observe() {
 		pagestocheck := model.PagesToCheck()
 		for _, page := range pagestocheck {
 			fmt.Printf("Checking page: %v - %v\n", page.Url, t)
+
 			resultchan := make(chan string)
 			go requestHTML(*page, resultchan)
-
 			resultString := <-resultchan
+
 			if page.HtmlString != resultString {
 				fmt.Printf("%v has a change!\n\n", page.Url)
 				page.HtmlString = resultString
