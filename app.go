@@ -12,6 +12,8 @@ func main() {
 	db := conf.SetupDB()
 	db.AutoMigrate(&model.User{}, &model.Page{})
 
+	model.Db = db
+
 	stopped := make(chan bool, 1)
 	worker.StartObserving(stopped)
 
