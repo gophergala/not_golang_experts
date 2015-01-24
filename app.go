@@ -1,14 +1,18 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gophergala/not_golang_experts/conf"
 	"github.com/gophergala/not_golang_experts/model"
+	"github.com/gophergala/not_golang_experts/routes"
+	"github.com/gorilla/mux"
+	"net/http"
 )
 
 func main() {
 	db := conf.SetupDB()
 	db.AutoMigrate(&model.User{})
 
-	fmt.Println("Hello world!!!")
+	router := mux.NewRouter()
+	router.HandleFunc("/", routes.Index)
+	http.ListenAndServe(":3000", router)
 }
