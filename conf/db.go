@@ -5,11 +5,14 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func SetupDB() gorm.DB {
+var DB *gorm.DB
+
+func SetupDB() *gorm.DB {
 	db, err := gorm.Open("postgres", "dbname=gopherstalker sslmode=disable")
 	db.LogMode(true)
 	PanicIf(err)
-	return db
+	DB = &db
+	return DB
 }
 
 func PanicIf(err error) {
