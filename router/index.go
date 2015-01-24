@@ -1,16 +1,17 @@
 package router
 
 import (
-	"encoding/json"
+	"github.com/unrolled/render"
 	"net/http"
 )
 
 func Index(res http.ResponseWriter, req *http.Request) {
-	message := map[string]string{"message": "Hello world!"}
-	json, err := json.Marshal(message)
-	if err != nil {
-		panic(err)
-	}
-
-	res.Write(json)
+	render := render.New(render.Options{
+		Directory:     "views",
+		Layout:        "layout",
+		Extensions:    []string{".tmpl", ".html"},
+		Charset:       "UTF-8",
+		IsDevelopment: true,
+	})
+	render.HTML(res, 200, "index", nil)
 }

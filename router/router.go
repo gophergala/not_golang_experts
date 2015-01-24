@@ -8,10 +8,17 @@ import (
 func GetRoutes() *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/", BaseHandler(Index))
+
 	r.Path("/registrations").Subrouter().Methods("POST").HandlerFunc(BaseHandler(RegisterSession))
 
 	r.Path("/sessions").Subrouter().Methods("POST").HandlerFunc(BaseHandler(CreateSession))
 	r.Path("/sessions").Subrouter().Methods("DELETE").HandlerFunc(BaseHandler(DestroySession))
+
+	// Serve static assets
+
+	r.Handle("/public/javascripts/{rest}", http.StripPrefix("/public/", http.FileServer(http.Dir("public/"))))
+	r.Handle("/public/stylesheets/{rest}", http.StripPrefix("/public/", http.FileServer(http.Dir("public/"))))
+	r.Handle("/public/images/{rest}", http.StripPrefix("/public/", http.FileServer(http.Dir("public/"))))
 
 	return r
 }
