@@ -14,13 +14,13 @@ type Page struct {
 }
 
 func PagesToCheck() []*Page {
-	Db.LogMode(false)
+	DB.LogMode(false)
 
 	var pages []*Page
-	Db.Where("last_checked_at < ?", time.Now().Add(-time.Millisecond * 1500)).Find(&pages)
+	DB.Where("last_checked_at < ?", time.Now().Add(-time.Millisecond * 1500)).Find(&pages)
 	return pages
 }
 
 func (p Page) Save() {
-	Db.Save(&p)
+	DB.Save(&p)
 }
