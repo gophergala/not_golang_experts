@@ -40,6 +40,20 @@ func RegisterUser(email string, password string, password_confirmation string, s
 	}
 }
 
+func RegisterUserSession(email string, password string, success func(token string), not_success func(message string)) {
+	db := conf.SetupDB()
+	user := User{}
+	db.Where("email = ?", email).First(&user)
+
+	if userExists(email) && passwordValid(user.EncryptedPassword, password) {
+		user.Token = generateAuthToken()
+		db.Save(&user)
+		success(user.Token)
+	} else {
+		not_success("Invalid email or password")
+	}
+}
+
 func FindUserByAuthToken(value string) User {
 	db := conf.SetupDB()
 	user := User{}
@@ -82,4 +96,9 @@ func generateRandomBytes(n int) ([]byte, error) {
 func generateRandomString(s int) (string, error) {
 	b, err := generateRandomBytes(s)
 	return base64.URLEncoding.EncodeToString(b), err
+}
+
+func passwordValid(encrypted_password []byte, password string) bool {
+	result := bcrypt.CompareHashAndPassword(encrypted_password, []byte(password))
+	return result == nil
 }

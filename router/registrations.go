@@ -8,17 +8,17 @@ import (
 )
 
 type Registration struct {
-	User User `json:"user"`
+	User UserRegistration `json:"user"`
 }
 
-type User struct {
+type UserRegistration struct {
 	Email                string `json:"email"`
 	Password             string `json:"password"`
 	PasswordConfirmation string `json:"password_confirmation"`
 }
 
 func RegisterSession(res http.ResponseWriter, req *http.Request) {
-	email, password, password_confirmation, err := parseRequest(req.Body)
+	email, password, password_confirmation, err := parseRegistrationsRequest(req.Body)
 
 	if err != nil {
 		http.Error(res, err.Error(), http.StatusBadRequest)
@@ -32,15 +32,7 @@ func RegisterSession(res http.ResponseWriter, req *http.Request) {
 	})
 }
 
-func respondWith(json_map map[string]string, status int, res http.ResponseWriter) {
-	json_response, err := json.Marshal(json_map)
-	PanicIf(err)
-	res.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	res.WriteHeader(status)
-	res.Write(json_response)
-}
-
-func parseRequest(body io.Reader) (string, string, string, error) {
+func parseRegistrationsRequest(body io.Reader) (string, string, string, error) {
 	registration := Registration{}
 
 	decoder := json.NewDecoder(body)
