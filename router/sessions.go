@@ -32,6 +32,13 @@ func CreateSession(res http.ResponseWriter, req *http.Request) {
 }
 
 func DestroySession(res http.ResponseWriter, req *http.Request) {
+	params := req.URL.Query()
+
+	model.DestroyUserSession(params["token"][0], func(message string) {
+		respondWith(map[string]string{"message": message}, 200, res)
+	}, func(message string) {
+		respondWith(map[string]string{"error": message}, 404, res)
+	})
 }
 
 func parseSessionsRequest(body io.Reader) (string, string, error) {

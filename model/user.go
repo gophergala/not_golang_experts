@@ -54,6 +54,19 @@ func RegisterUserSession(email string, password string, success func(token strin
 	}
 }
 
+func DestroyUserSession(token string, success func(token string), not_success func(message string)) {
+	db := conf.SetupDB()
+	user := FindUserByAuthToken(token)
+
+	if userExists(user.Email) {
+		user.Token = generateAuthToken()
+		db.Save(&user)
+		success("Successfully logged out user")
+	} else {
+		not_success("Not found")
+	}
+}
+
 func FindUserByAuthToken(value string) User {
 	db := conf.SetupDB()
 	user := User{}
