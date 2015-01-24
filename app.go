@@ -4,6 +4,7 @@ import (
 	"github.com/gophergala/not_golang_experts/conf"
 	"github.com/gophergala/not_golang_experts/model"
 	"github.com/gophergala/not_golang_experts/router"
+	"github.com/gophergala/not_golang_experts/worker"
 	"net/http"
 )
 
@@ -11,5 +12,12 @@ func main() {
 	db := conf.SetupDB()
 	db.AutoMigrate(&model.User{}, &model.Page{})
 
+	model.DB = db
+
+	stopped := make(chan bool, 1)
+	worker.StartObserving(stopped)
+
 	http.ListenAndServe(":3000", router.GetRoutes())
+
+	<-stopped
 }
