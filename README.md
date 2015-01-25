@@ -92,11 +92,11 @@ Status `201`
 }
 ```
 
-Status `422`
+Status `404`
 
 Error messages:
 
-* Invalid email or password
+* Not found
 
 ```json
 {
