@@ -1,13 +1,13 @@
 package notificator
 
 import (
-	"github.com/gophergala/not_golang_experts/model"
 	"github.com/mailgun/mailgun-go"
 	"log"
+	"strings"
 	"os"
 )
 
-func SendPageUpdatedNotification(u *model.User, url string) {
+func SendPageUpdatedNotificationToUsers(emails []string, url string) {
 	gopher_env := os.Getenv("GOPHER_ENV")
 
 	if gopher_env == "production" {
@@ -18,13 +18,15 @@ func SendPageUpdatedNotification(u *model.User, url string) {
 				"Oscar Swanros <notif@gostalker.com>", // From
 				"Update!", // Subject
 				"The page "+url+" has been updated. Check it out!", // Plain-text body
-				"Oscar Swanros <"+u.Email+">",                      // Recipients (vararg list)
+				strings.Join(emails, ", "),
 			)
 
 			_, _, err := mg.Send(m)
 
 			if err != nil {
 				log.Fatal(err)
+			}else{
+				log.Println("Emails Sent!")
 			}
 		}()
 	}

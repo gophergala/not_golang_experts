@@ -18,7 +18,7 @@ var ticker *time.Ticker
 func StartObserving(stopped chan bool) {
 	stopchannel = stopped
 
-	ticker = time.NewTicker(time.Millisecond * 120000) // 2 min
+	ticker = time.NewTicker(time.Millisecond * 5000) // 2 min
 
 	go observe()
 }
@@ -29,7 +29,6 @@ func StopObserving() {
 }
 
 func observe() {
-	user := &model.User{Email: "swanros@gmail.com"}
 	for t := range ticker.C {
 		pagestocheck := model.PagesToCheck()
 		for _, page := range pagestocheck {
@@ -41,12 +40,13 @@ func observe() {
 
 			if page.HtmlString != resultString {
 				page.HtmlString = resultString
-				notificator.SendPageUpdatedNotification(user, page.Url)
+				notificator.SendPageUpdatedNotificationToUsers(page.UsersSubscribed(), page.Url)
 				fmt.Println("UPDATED -> " + resultString + "\n")
+				page.Save()
 			} else {
 				page.LastCheckedAt = time.Now()
+				page.Save()
 			}
-			page.Save()
 		}
 	}
 }
