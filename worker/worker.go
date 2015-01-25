@@ -3,13 +3,13 @@ package worker
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"fmt"
 	"github.com/gophergala/not_golang_experts/model"
 	"github.com/gophergala/not_golang_experts/notificator"
 	"io/ioutil"
 	"net/http"
 	"regexp"
 	"time"
+	"log"
 )
 
 var stopchannel chan bool
@@ -32,7 +32,7 @@ func observe() {
 	for t := range ticker.C {
 		pagestocheck := model.PagesToCheck()
 		for _, page := range pagestocheck {
-			fmt.Printf("Checking page: %v - %v\n", page.Url, t)
+			log.Printf("Checking page: %v - %v\n", page.Url, t)
 
 			resultchan := make(chan string, 1)
 			go requestHTML(page, resultchan)
@@ -41,7 +41,7 @@ func observe() {
 			if page.HtmlString != resultString {
 				page.HtmlString = resultString
 				notificator.SendPageUpdatedNotificationToUsers(page.SubscribedUsersEmails(), page.Url)
-				fmt.Println("UPDATED -> " + resultString)
+				log.Println("UPDATED -> " + resultString)
 			} else {
 				page.LastCheckedAt = time.Now()
 			}
