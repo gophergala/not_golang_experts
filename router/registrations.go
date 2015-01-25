@@ -20,10 +20,7 @@ type UserRegistration struct {
 func RegisterSession(res http.ResponseWriter, req *http.Request) {
 	email, password, password_confirmation, err := parseRegistrationsRequest(req.Body)
 
-	if err != nil {
-		http.Error(res, err.Error(), http.StatusBadRequest)
-		return
-	}
+	PanicIf(err, res)
 
 	model.RegisterUser(email, password, password_confirmation, func(token string) {
 		respondWith(map[string]string{"token": token}, 201, res)

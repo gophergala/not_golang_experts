@@ -12,15 +12,19 @@ type Subscription struct {
 	UpdatedAt time.Time
 }
 
-func SubscribeUser(url string, token string) Subscription {
+func SubscribeUser(url string, token string, success func(Subscription), not_success func(string)) {
 	page := FindOrCreatePageByUrl(url)
 	user := FindUserByAuthToken(token)
-	subscription := Subscription{}
-	DB.Where(Subscription{UserId: user.Id, PageId: page.Id}).FirstOrCreate(&subscription)
-	return subscription
+	if user.Id != 0 {
+		subscription := Subscription{}
+		DB.Where(Subscription{UserId: user.Id, PageId: page.Id}).FirstOrCreate(&subscription)
+		success(subscription)
+	} else {
+		not_success("Invalid session token")
+	}
 }
 
-func GetSubscriptionsForUser(token string, success func(subscriptions []Subscription), not_success func(message string)) {
+func GetSubscriptionsForUser(token string, success func([]Subscription), not_success func(string)) {
 	user := FindUserByAuthToken(token)
 	if user.Id != 0 {
 		subscriptions := []Subscription{}

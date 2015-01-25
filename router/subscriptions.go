@@ -24,18 +24,19 @@ func SubscriptionsIndex(res http.ResponseWriter, req *http.Request) {
 func SubscriptionsCreate(res http.ResponseWriter, req *http.Request) {
 	token := getToken(req)
 	url, err := parseSubscriptionsRequest(req.Body)
-	PanicIf(err)
-	subscription := model.SubscribeUser(url, token)
+	PanicIf(err, res)
 
-	respondWith(map[string]interface{}{"Subscription": subscription}, 201, res)
+	model.SubscribeUser(url, token, func(subscription model.Subscription) {
+		respondWith(map[string]interface{}{"Subscription": subscription}, 201, res)
+	}, func(message string) {
+		respondWith(map[string]interface{}{"error": message}, 401, res)
+	})
 }
 
 func SubscriptionsDestroy(res http.ResponseWriter, req *http.Request) {
 	message := map[string]string{"message": "Subscriptions Destroy"}
 	json, err := json.Marshal(message)
-	if err != nil {
-		panic(err)
-	}
+	PanicIf(err, res)
 	res.Write(json)
 }
 
@@ -50,5 +51,9 @@ func parseSubscriptionsRequest(body io.Reader) (string, error) {
 
 func getToken(req *http.Request) string {
 	params := req.URL.Query()
-	return params["token"][0]
+	if len(params["token"]) > 0 {
+		return params["token"][0]
+	} else {
+		return ""
+	}
 }
