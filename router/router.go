@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gorilla/mux"
+	"log"
 	"net/http"
 )
 
@@ -26,6 +27,7 @@ func GetRoutes() *mux.Router {
 func BaseHandler(fn func(w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		log.Println("Started " + r.Method + " " + r.URL.Path + " from " + r.RemoteAddr)
 		fn(w, r)
 	}
 }
