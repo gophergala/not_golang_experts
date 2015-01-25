@@ -4,6 +4,7 @@ import (
 	"time"
 	"fmt"
 	"net/http"
+	"regexp"
 	"io/ioutil"
 	"crypto/md5"
 	"encoding/hex"
@@ -34,24 +35,23 @@ func observe() {
 		for _, page := range pagestocheck {
 			fmt.Printf("Checking page: %v - %v\n", page.Url, t)
 
-			resultchan := make(chan string)
-			go requestHTML(*page, resultchan)
+			resultchan := make(chan string, 1)
+			go requestHTML(page, resultchan)
 			resultString := <-resultchan
 
-			if page.HtmlString != resultString {
-				fmt.Printf("%v has a change!\n\n", page.Url)
-				notificator.SendPageUpdatedNotification(user, page.Url)
+			if page.HtmlString!=resultString {
 				page.HtmlString = resultString
+				notificator.SendPageUpdatedNotification(user, page.Url)
+				fmt.Println("UPDATED -> "+ resultString + "\n")
 			}else{
 				page.LastCheckedAt = time.Now()
 			}
-
 			page.Save()
 		}
 	}
 }
 
-func requestHTML(p model.Page, result chan string) {
+func requestHTML(p *model.Page, resultchan chan string) {
 	res, err := http.Get(p.Url)
 
 	if err!=nil {
@@ -63,8 +63,11 @@ func requestHTML(p model.Page, result chan string) {
 			panic(err)
 		}
 
+		re := regexp.MustCompile("<html(\\S|\\s)*\\/html>")
+		matches := re.FindString(string(html))
+
 		hasher := md5.New()
-		hasher.Write([]byte(html))
-		result <- hex.EncodeToString(hasher.Sum(nil))
+		hasher.Write([]byte(string(matches)))
+		resultchan<-hex.EncodeToString(hasher.Sum(nil))
 	}
 }
