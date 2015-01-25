@@ -19,10 +19,7 @@ type UserSession struct {
 func CreateSession(res http.ResponseWriter, req *http.Request) {
 	email, password, err := parseSessionsRequest(req.Body)
 
-	if err != nil {
-		http.Error(res, err.Error(), http.StatusBadRequest)
-		return
-	}
+	PanicIf(err, res)
 
 	model.RegisterUserSession(email, password, func(token string) {
 		respondWith(map[string]string{"token": token}, 201, res)
@@ -43,7 +40,6 @@ func DestroySession(res http.ResponseWriter, req *http.Request) {
 
 func parseSessionsRequest(body io.Reader) (string, string, error) {
 	registration := Registration{}
-
 	decoder := json.NewDecoder(body)
 	err := decoder.Decode(&registration)
 

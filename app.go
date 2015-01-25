@@ -18,7 +18,7 @@ func main() {
 	}
 
 	db := conf.SetupDB()
-	db.AutoMigrate(&model.User{}, &model.Page{})
+	db.AutoMigrate(&model.User{}, &model.Page{}, &model.Subscription{})
 
 	model.DB = db
 
