@@ -18,8 +18,10 @@
   var App = {
     Views: {},
     Models: {},
+    Helpers: {},
     initialize: function() {
       App.router = new App.Router();
+      App.session = App.Helpers.Session;
       Backbone.history.start({pushState: true, hashChange: false});
     }
   };
@@ -49,8 +51,12 @@
     signUpModal: this.$('#signUpModal'),
 
     initialize: function() {
-      App.signInView = new App.Views.SessionModal({ el: "#signInModal" });
-      App.signUpView = new App.Views.SessionModal({ el: "#signUpModal" });
+      if (App.session.authenticated()) {
+        this.hideLoginLinks();
+      } else {
+        App.signInView = new App.Views.SessionModal({ el: "#signInModal" });
+        App.signUpView = new App.Views.SessionModal({ el: "#signUpModal" });
+      }
     },
 
     openSignInModal: function(e) {
@@ -59,6 +65,11 @@
 
     openSignUpModal: function(e) {
       this.signUpModal.modal('show');
+    },
+
+    hideLoginLinks: function() {
+      this.$el.find('.js-not-authenticated').hide();
+      this.$el.find('.js-authenticated').show();
     }
   });
 
@@ -97,9 +108,19 @@
   App.Views.Dashboard = Backbone.View.extend({
     el: "body",
     initialize: function() {
-      console.log(this.$el);
+      console.log(App.session.authenticated());
+      console.log(this);
     }
   });
+
+  App.Helpers.Session = {
+    authenticated: function() {
+      return localStorage.getItem("authToken").length > 0;
+    },
+    token: function() {
+      return localStorage.getItem('authToken');
+    }
+  };
 
   $(document).ready(function() {
     App.initialize();

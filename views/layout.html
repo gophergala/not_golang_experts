@@ -11,8 +11,9 @@
         <div class="col-xs-4">
           Go Stalker
         </div>
-        <a href="javascript:void(0)" class="js-open-sign-up-modal">Sign up</a>
-        <a href="javascript:void(0)" class="js-open-sign-in-modal">Sign in</a>
+        <a href="javascript:void(0)" class="js-open-sign-up-modal js-not-authenticated">Sign up</a>
+        <a href="javascript:void(0)" class="js-open-sign-in-modal js-not-authenticated">Sign in</a>
+        <a href="/dashbaord" class="js-authenticated" style="display: none;">Dashboard</a>
       </header>
       {{ yield }}
       <footer class="row">
