@@ -17,7 +17,7 @@ func PagesToCheck() []*Page {
 	DB.LogMode(false)
 
 	var pages []*Page
-	DB.Where("last_checked_at < ?", time.Now().Add(-time.Millisecond * 1500)).Find(&pages)
+	DB.Where("last_checked_at < ?", time.Now().Add(-time.Second * 5)).Find(&pages)
 	return pages
 }
 
