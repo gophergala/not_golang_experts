@@ -18,7 +18,7 @@ var ticker *time.Ticker
 func StartObserving(stopped chan bool) {
 	stopchannel = stopped
 
-	ticker = time.NewTicker(time.Millisecond * 5000) // 2 min
+	ticker = time.NewTicker(time.Millisecond * 120000) // 2 min
 
 	go observe()
 }
