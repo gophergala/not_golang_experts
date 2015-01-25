@@ -22,7 +22,7 @@ func PagesToCheck() []*Page {
 }
 
 func FindOrCreatePageByUrl(url string) Page {
-	page := Page{}
+	page := Page{LastCheckedAt: time.Now()}
 	DB.Where(Page{Url: url}).FirstOrCreate(&page)
 	return page
 }
