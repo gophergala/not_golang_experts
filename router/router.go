@@ -14,9 +14,11 @@ func GetRoutes() *mux.Router {
 
 	r.Path("/sessions").Subrouter().Methods("POST").HandlerFunc(BaseHandler(CreateSession))
 	r.Path("/sessions").Subrouter().Methods("DELETE").HandlerFunc(BaseHandler(DestroySession))
-	r.HandleFunc("/subscriptions", BaseHandler(SubscriptionsIndex))
-	r.HandleFunc("/subscriptions", BaseHandler(SubscriptionsCreate)).Methods("POST")
-	r.HandleFunc("/subscriptions/{id:[0-9]+}", BaseHandler(SubscriptionsDestroy)).Methods("DELETE")
+
+	subscriptions := r.Path("/subscriptions").Subrouter()
+	subscriptions.Methods("GET").HandlerFunc(BaseHandler(SubscriptionsIndex))
+	subscriptions.Methods("POST").HandlerFunc(BaseHandler(SubscriptionsCreate))
+	subscriptions.Methods("DELETE").Path("/{id:[0-9]+}").HandlerFunc(BaseHandler(SubscriptionsDestroy))
 
 	// Serve static assets
 

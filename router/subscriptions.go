@@ -7,31 +7,27 @@ import (
 	"net/http"
 )
 
-type Subscription struct {
+type SubscriptionParams struct {
 	Url string `json:"url"`
 }
 
 func SubscriptionsIndex(res http.ResponseWriter, req *http.Request) {
-	message := map[string]string{"message": "Subscriptions Index"}
-	json, err := json.Marshal(message)
-	if err != nil {
-		panic(err)
-	}
-	res.Write(json)
+	token := getToken(req)
+
+	model.GetSubscriptionsForUser(token, func(subscriptions []model.Subscription) {
+		respondWith(subscriptions, 200, res)
+	}, func(message string) {
+		respondWith(map[string]string{"error": message}, 401, res)
+	})
 }
 
 func SubscriptionsCreate(res http.ResponseWriter, req *http.Request) {
-	params := req.URL.Query()
+	token := getToken(req)
 	url, err := parseSubscriptionsRequest(req.Body)
-	token := params["token"][0]
-
+	PanicIf(err)
 	subscription := model.SubscribeUser(url, token)
-	message := map[string]interface{}{"Subscription": subscription}
-	json, err := json.Marshal(message)
-	if err != nil {
-		panic(err)
-	}
-	res.Write(json)
+
+	respondWith(map[string]interface{}{"Subscription": subscription}, 201, res)
 }
 
 func SubscriptionsDestroy(res http.ResponseWriter, req *http.Request) {
@@ -44,10 +40,15 @@ func SubscriptionsDestroy(res http.ResponseWriter, req *http.Request) {
 }
 
 func parseSubscriptionsRequest(body io.Reader) (string, error) {
-	subscription := Subscription{}
+	subscription := SubscriptionParams{}
 
 	decoder := json.NewDecoder(body)
 	err := decoder.Decode(&subscription)
 
 	return subscription.Url, err
+}
+
+func getToken(req *http.Request) string {
+	params := req.URL.Query()
+	return params["token"][0]
 }

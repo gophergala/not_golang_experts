@@ -4,7 +4,6 @@ import (
 	"github.com/gophergala/not_golang_experts/conf"
 	"github.com/gophergala/not_golang_experts/model"
 	"github.com/gophergala/not_golang_experts/router"
-	"github.com/gophergala/not_golang_experts/worker"
 	"log"
 	"net/http"
 	"os"
@@ -22,12 +21,7 @@ func main() {
 
 	model.DB = db
 
-	stopped := make(chan bool, 1)
-	worker.StartObserving(stopped)
-
 	log.Println("Initializing application on port: " + port)
 
 	http.ListenAndServe(":"+port, router.GetRoutes())
-
-	<-stopped
 }

@@ -13,14 +13,20 @@ type Subscription struct {
 }
 
 func SubscribeUser(url string, token string) Subscription {
-	page := Page{}
+	page := FindOrCreatePageByUrl(url)
 	user := FindUserByAuthToken(token)
-	DB.FirstOrCreate(&page, &Page{Url: url})
-
-	subscription := Subscription{
-		PageId: page.Id,
-		UserId: user.Id,
-	}
-	DB.Create(&subscription)
+	subscription := Subscription{}
+	DB.Where(Subscription{UserId: user.Id, PageId: page.Id}).FirstOrCreate(&subscription)
 	return subscription
+}
+
+func GetSubscriptionsForUser(token string, success func(subscriptions []Subscription), not_success func(message string)) {
+	user := FindUserByAuthToken(token)
+	if user.Id != 0 {
+		subscriptions := []Subscription{}
+		DB.Where(Subscription{UserId: user.Id}).Find(&subscriptions)
+		success(subscriptions)
+	} else {
+		not_success("Invalid session token")
+	}
 }
