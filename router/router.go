@@ -14,7 +14,7 @@ func GetRoutes() *mux.Router {
 
 	r.Path("/sessions").Subrouter().Methods("POST").HandlerFunc(BaseHandler(CreateSession))
 	r.Path("/sessions").Subrouter().Methods("DELETE").HandlerFunc(BaseHandler(DestroySession))
-	r.HandleFunc("/subscriptions", BaseHandler(SubscriptionsIndex)).Methods("GET")
+	r.HandleFunc("/subscriptions", BaseHandler(SubscriptionsIndex))
 	r.HandleFunc("/subscriptions", BaseHandler(SubscriptionsCreate)).Methods("POST")
 	r.HandleFunc("/subscriptions/{id:[0-9]+}", BaseHandler(SubscriptionsDestroy)).Methods("DELETE")
 
