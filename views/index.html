@@ -15,3 +15,70 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Sign in into your account</h4>
+      </div>
+      <form action="/sessions">
+        <div class="modal-body">
+          <div class="alert alert-danger" role="alert" style="display:none;"></div>
+
+          <div class="form-group">
+            <label for="user_email">Email</label>
+            <input id="user_email" type="email" name="email" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label for="user_password">Password</label>
+            <input id="user_password" type="password" name="password" class="form-control" />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <input type="submit" class="btn btn-primary" value="Sign in" />
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="signUpModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Sign up now</h4>
+      </div>
+      <form action="/registrations">
+        <div class="modal-body">
+          <div class="alert alert-danger" role="alert" style="display:none;"></div>
+
+          <div class="form-group">
+            <label for="user_email">Email</label>
+            <input id="user_email" type="email" name="email" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label for="user_password">Password</label>
+            <input id="user_password" type="password" name="password" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label for="user_password_confirmation">Password confirmation</label>
+            <input id="user_password_confirmation" type="password" name="password_confirmation" class="form-control" />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <input type="submit" class="btn btn-primary" value="Sign up" />
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

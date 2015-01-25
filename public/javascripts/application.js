@@ -32,46 +32,16 @@
       "dashboard" : "dashboard"
     },
     index: function() {
-      App.indexView = new App.Views.Index();
+      App.navigationBarView = new App.Views.NavigationBar();
+      App.indexView         = new App.Views.Index();
     },
     dashboard: function() {
-      App.indexView = new App.Views.Dashboard();
+      App.navigationBarView = new App.Views.NavigationBar();
+      App.dashboardView     = new App.Views.Dashboard();
     }
   });
 
-  App.Views.Index = Backbone.View.extend({
-    el: '.container-fluid',
-
-    events: {
-      "click .js-open-sign-in-modal" : "openSignInModal",
-      "click .js-open-sign-up-modal" : "openSignUpModal"
-    },
-
-    signInModal: this.$('#signInModal'),
-    signUpModal: this.$('#signUpModal'),
-
-    initialize: function() {
-      if (App.session.authenticated()) {
-        this.hideLoginLinks();
-      } else {
-        App.signInView = new App.Views.SessionModal({ el: "#signInModal" });
-        App.signUpView = new App.Views.SessionModal({ el: "#signUpModal" });
-      }
-    },
-
-    openSignInModal: function(e) {
-      this.signInModal.modal('show');
-    },
-
-    openSignUpModal: function(e) {
-      this.signUpModal.modal('show');
-    },
-
-    hideLoginLinks: function() {
-      this.$el.find('.js-not-authenticated').hide();
-      this.$el.find('.js-authenticated').show();
-    }
-  });
+  App.Views.Index = Backbone.View.extend({ });
 
   App.Views.SessionModal = Backbone.View.extend({
     events: {
@@ -105,17 +75,57 @@
     }
   });
 
-  App.Views.Dashboard = Backbone.View.extend({
-    el: "body",
+  App.Views.NavigationBar = Backbone.View.extend({
+    el: "header.js-navigation-bar",
+
+    events: {
+      "click .js-open-sign-in-modal" : "openSignInModal",
+      "click .js-open-sign-up-modal" : "openSignUpModal",
+      "click .js-sign-out-link"      : "signOut"
+    },
+
+    signInModal: this.$('#signInModal'),
+    signUpModal: this.$('#signUpModal'),
+
     initialize: function() {
-      console.log(App.session.authenticated());
-      console.log(this);
+      if (App.session.authenticated()) {
+        this.hideLoginLinks();
+      } else {
+        App.signInView = new App.Views.SessionModal({ el: "#signInModal" });
+        App.signUpView = new App.Views.SessionModal({ el: "#signUpModal" });
+      }
+    },
+
+    openSignInModal: function(e) {
+      this.signInModal.modal('show');
+    },
+
+    openSignUpModal: function(e) {
+      this.signUpModal.modal('show');
+    },
+
+    hideLoginLinks: function() {
+      this.$el.find('.js-not-authenticated').hide();
+      this.$el.find('.js-authenticated').show();
+    },
+    signOut: function(e) {
+      e.preventDefault()
+      $.ajax({
+        url: e.currentTarget.href + "?token=" + App.session.token(),
+        type: 'DELETE'
+      }).success(function(response){
+        document.location.href = '/';
+        localStorage.removeItem('authToken');
+      });
+      return false;
     }
   });
 
+  App.Views.Dashboard = Backbone.View.extend({ });
+
   App.Helpers.Session = {
     authenticated: function() {
-      return localStorage.getItem("authToken").length > 0;
+      return localStorage.getItem("authToken") != null;
     },
     token: function() {
       return localStorage.getItem('authToken');
