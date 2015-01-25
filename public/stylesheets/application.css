@@ -1,0 +1,36 @@
+body, html {
+  height: 100%;
+}
+
+header {
+  background-color: #595758;
+  height: 100px;
+}
+
+footer {
+  background-color: #595758;
+  height: 75px;
+}
+
+#welcome {
+  background-color: #009def;
+  height: 450px;
+  text-align: center;
+}
+
+  #welcome img {
+    margin-top: 125px;
+  }
+
+#info {
+  background-color: #fff;
+  height: 450px;
+}
+
+.feature-box {
+  border-top: 30px solid #00d872;
+  margin-top: 50px;
+  padding: 50px;
+  text-align: center;
+  width: 400px;
+}

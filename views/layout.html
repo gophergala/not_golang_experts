@@ -3,9 +3,22 @@
   <head>
     <title>Go stalker!</title>
     <script type="text/javascript" src="public/javascripts/application.js"></script>
-    <link rel="stylesheet" href="public/stylesheets/application.css"></script>
+    <link rel="stylesheet" href="public/stylesheets/bootstrap.min.css" />
+    <link rel="stylesheet" href="public/stylesheets/application.css" />
   </head>
   <body>
-    {{ yield }}
+    <div class="container-fluid">
+      <header class="row">
+        <div class="col-xs-4">
+          Go Stalker
+        </div>
+      </header>
+      {{ yield }}
+      <footer class="row">
+        <div class="col-xs-4">
+          Footer
+        </div>
+      </footer>
+    </div>
   </body>
 </html>
