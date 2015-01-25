@@ -8,6 +8,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"github.com/gophergala/not_golang_experts/model"
+	"github.com/gophergala/not_golang_experts/notificator"
 )
 
 var stopchannel		chan bool
@@ -27,6 +28,7 @@ func StopObserving() {
 }
 
 func observe() {
+	user := &model.User{Email: "swanros@gmail.com"}
 	for t := range ticker.C {
 		pagestocheck := model.PagesToCheck()
 		for _, page := range pagestocheck {
@@ -38,6 +40,7 @@ func observe() {
 
 			if page.HtmlString != resultString {
 				fmt.Printf("%v has a change!\n\n", page.Url)
+				notificator.SendPageUpdatedNotification(user, page.Url)
 				page.HtmlString = resultString
 			}else{
 				page.LastCheckedAt = time.Now()
