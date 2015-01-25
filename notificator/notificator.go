@@ -17,6 +17,7 @@ func SendPageUpdatedNotificationToUsers(emails []string, url string) {
 				"GoStalker! :D <notif@gostalker.com>", // From
 				"Update!", // Subject
 				"The page "+url+" has been updated. Check it out!", // Plain-text body
+				"none@gostalker.com",
 			)
 
 			for _, email:= range emails {
