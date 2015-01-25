@@ -9,6 +9,7 @@ import (
 func GetRoutes() *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/", BaseHandler(Index))
+	r.HandleFunc("/dashboard", BaseHandler(Dashboard))
 
 	// Registrations routes
 
