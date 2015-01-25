@@ -80,6 +80,8 @@ Error messages:
 
 #### DELETE `/sessions?token=yourauthtoken`
 
+**This request does not require body**
+
 ##### Response codes
 
 Status `201`
@@ -91,8 +93,6 @@ Status `201`
 ```
 
 Status `422`
-
-**This request does not require body**
 
 Error messages:
 
