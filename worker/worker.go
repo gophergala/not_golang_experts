@@ -1,24 +1,24 @@
 package worker
 
 import (
-	"time"
-	"fmt"
-	"net/http"
-	"regexp"
-	"io/ioutil"
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"github.com/gophergala/not_golang_experts/model"
 	"github.com/gophergala/not_golang_experts/notificator"
+	"io/ioutil"
+	"net/http"
+	"regexp"
+	"time"
 )
 
-var stopchannel		chan bool
-var ticker				*time.Ticker
+var stopchannel chan bool
+var ticker *time.Ticker
 
 func StartObserving(stopped chan bool) {
 	stopchannel = stopped
 
-	ticker = time.NewTicker(time.Millisecond * 1500) // 1.5 secs
+	ticker = time.NewTicker(time.Millisecond * 120000) // 2 min
 
 	go observe()
 }
@@ -39,11 +39,11 @@ func observe() {
 			go requestHTML(page, resultchan)
 			resultString := <-resultchan
 
-			if page.HtmlString!=resultString {
+			if page.HtmlString != resultString {
 				page.HtmlString = resultString
 				notificator.SendPageUpdatedNotification(user, page.Url)
-				fmt.Println("UPDATED -> "+ resultString + "\n")
-			}else{
+				fmt.Println("UPDATED -> " + resultString + "\n")
+			} else {
 				page.LastCheckedAt = time.Now()
 			}
 			page.Save()
@@ -54,12 +54,12 @@ func observe() {
 func requestHTML(p *model.Page, resultchan chan string) {
 	res, err := http.Get(p.Url)
 
-	if err!=nil {
+	if err != nil {
 		panic(err)
-	}else{
+	} else {
 		defer res.Body.Close()
 		html, err := ioutil.ReadAll(res.Body)
-		if err!=nil {
+		if err != nil {
 			panic(err)
 		}
 
@@ -68,6 +68,6 @@ func requestHTML(p *model.Page, resultchan chan string) {
 
 		hasher := md5.New()
 		hasher.Write([]byte(string(matches)))
-		resultchan<-hex.EncodeToString(hasher.Sum(nil))
+		resultchan <- hex.EncodeToString(hasher.Sum(nil))
 	}
 }
