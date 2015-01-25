@@ -40,8 +40,8 @@ func observe() {
 
 			if page.HtmlString != resultString {
 				page.HtmlString = resultString
-				notificator.SendPageUpdatedNotificationToUsers(page.UsersSubscribed(), page.Url)
-				fmt.Println("UPDATED -> " + resultString + "\n")
+				notificator.SendPageUpdatedNotificationToUsers(page.SubscribedUsersEmails(), page.Url)
+				fmt.Println("UPDATED -> " + resultString)
 			} else {
 				page.LastCheckedAt = time.Now()
 			}

@@ -32,7 +32,7 @@ func FindOrCreatePageByUrl(url string) Page {
 	return page
 }
 
-func (p *Page) UsersSubscribed() []string {
+func (p *Page) SubscribedUsersEmails() []string {
 	var results []UserSubscribed
 	querystring := "join subscriptions on subscriptions.user_id = users.id AND subscriptions.page_id = " + strconv.FormatInt(p.Id, 10)
 	DB.Table("users").Select("users.email").Joins(querystring).Scan(&results)
