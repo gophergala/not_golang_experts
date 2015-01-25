@@ -29,7 +29,6 @@ func StopObserving() {
 }
 
 func observe() {
-	user := &model.User{Email: "swanros@gmail.com"}
 	for t := range ticker.C {
 		pagestocheck := model.PagesToCheck()
 		for _, page := range pagestocheck {
@@ -41,8 +40,8 @@ func observe() {
 
 			if page.HtmlString != resultString {
 				page.HtmlString = resultString
-				notificator.SendPageUpdatedNotification(user, page.Url)
-				fmt.Println("UPDATED -> " + resultString + "\n")
+				notificator.SendPageUpdatedNotificationToUsers(page.SubscribedUsersEmails(), page.Url)
+				fmt.Println("UPDATED -> " + resultString)
 			} else {
 				page.LastCheckedAt = time.Now()
 			}
