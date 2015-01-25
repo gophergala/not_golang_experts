@@ -1,6 +1,7 @@
 package model
 
 import (
+	"strconv"
 	"time"
 )
 
@@ -11,6 +12,10 @@ type Page struct {
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	HtmlString    string
+}
+
+type UserSubscribed struct {
+	Email string
 }
 
 func PagesToCheck() []*Page {
@@ -25,6 +30,18 @@ func FindOrCreatePageByUrl(url string) Page {
 	page := Page{LastCheckedAt: time.Now()}
 	DB.Where(Page{Url: url}).FirstOrCreate(&page)
 	return page
+}
+
+func (p *Page) UsersSubscribed() []string {
+	var results []UserSubscribed
+	querystring := "join subscriptions on subscriptions.user_id = users.id AND subscriptions.page_id = " + strconv.FormatInt(p.Id, 10)
+	DB.Table("users").Select("users.email").Joins(querystring).Scan(&results)
+
+	var emails = make([]string, len(results))
+	for i, result := range results {
+		emails[i] = result.Email
+	}
+	return emails
 }
 
 func (p Page) Save() {
