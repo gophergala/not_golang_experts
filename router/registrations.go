@@ -26,9 +26,9 @@ func RegisterSession(res http.ResponseWriter, req *http.Request) {
 	}
 
 	model.RegisterUser(email, password, password_confirmation, func(token string) {
-		respondWith(map[string]string{"token": token}, 201, res)
+		respondWith(map[string]interface{}{"token": token}, 201, res)
 	}, func(message string) {
-		respondWith(map[string]string{"error": message}, 422, res)
+		respondWith(map[string]interface{}{"error": message}, 422, res)
 	})
 }
 

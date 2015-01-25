@@ -25,9 +25,9 @@ func CreateSession(res http.ResponseWriter, req *http.Request) {
 	}
 
 	model.RegisterUserSession(email, password, func(token string) {
-		respondWith(map[string]string{"token": token}, 201, res)
+		respondWith(map[string]interface{}{"token": token}, 201, res)
 	}, func(message string) {
-		respondWith(map[string]string{"error": message}, 422, res)
+		respondWith(map[string]interface{}{"error": message}, 422, res)
 	})
 }
 
@@ -35,9 +35,9 @@ func DestroySession(res http.ResponseWriter, req *http.Request) {
 	params := req.URL.Query()
 
 	model.DestroyUserSession(params["token"][0], func(message string) {
-		respondWith(map[string]string{"message": message}, 200, res)
+		respondWith(map[string]interface{}{"message": message}, 200, res)
 	}, func(message string) {
-		respondWith(map[string]string{"error": message}, 404, res)
+		respondWith(map[string]interface{}{"error": message}, 404, res)
 	})
 }
 
