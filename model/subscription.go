@@ -1,6 +1,7 @@
 package model
 
 import (
+	"strconv"
 	"time"
 )
 
@@ -30,6 +31,24 @@ func GetSubscriptionsForUser(token string, success func([]Subscription), not_suc
 		subscriptions := []Subscription{}
 		DB.Where(Subscription{UserId: user.Id}).Find(&subscriptions)
 		success(subscriptions)
+	} else {
+		not_success("Invalid session token")
+	}
+}
+
+func UnsubscribeUser(id string, token string, success func(string), not_success func(string)) {
+	user := FindUserByAuthToken(token)
+	subscriptionId, _ := strconv.ParseInt(id, 0, 64)
+
+	if user.Id != 0 {
+		subscription := Subscription{}
+		DB.Where(Subscription{Id: subscriptionId, UserId: user.Id}).First(&subscription)
+		if subscription.Id != 0 {
+			DB.Delete(&subscription)
+			success("Successfully unsubscribed from subscription: " + id)
+		} else {
+			not_success("Invalid subscription id")
+		}
 	} else {
 		not_success("Invalid session token")
 	}

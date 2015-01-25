@@ -3,6 +3,7 @@ package router
 import (
 	"encoding/json"
 	"github.com/gophergala/not_golang_experts/model"
+	"github.com/gorilla/mux"
 	"io"
 	"net/http"
 )
@@ -34,10 +35,14 @@ func SubscriptionsCreate(res http.ResponseWriter, req *http.Request) {
 }
 
 func SubscriptionsDestroy(res http.ResponseWriter, req *http.Request) {
-	message := map[string]string{"message": "Subscriptions Destroy"}
-	json, err := json.Marshal(message)
-	PanicIf(err, res)
-	res.Write(json)
+	token := getToken(req)
+	vars := mux.Vars(req)
+
+	model.UnsubscribeUser(vars["id"], token, func(message string) {
+		respondWith(map[string]interface{}{"message": message}, 200, res)
+	}, func(message string) {
+		respondWith(map[string]interface{}{"error": message}, 401, res)
+	})
 }
 
 func parseSubscriptionsRequest(body io.Reader) (string, error) {

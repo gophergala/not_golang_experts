@@ -10,15 +10,20 @@ func GetRoutes() *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/", BaseHandler(Index))
 
-	r.Path("/registrations").Subrouter().Methods("POST").HandlerFunc(BaseHandler(RegisterSession))
+	// Registrations routes
 
-	r.Path("/sessions").Subrouter().Methods("POST").HandlerFunc(BaseHandler(CreateSession))
-	r.Path("/sessions").Subrouter().Methods("DELETE").HandlerFunc(BaseHandler(DestroySession))
+	r.HandleFunc("/registrations", BaseHandler(RegisterSession)).Methods("POST")
 
-	subscriptions := r.Path("/subscriptions").Subrouter()
-	subscriptions.Methods("GET").HandlerFunc(BaseHandler(SubscriptionsIndex))
-	subscriptions.Methods("POST").HandlerFunc(BaseHandler(SubscriptionsCreate))
-	subscriptions.Methods("DELETE").Path("/{id:[0-9]+}").HandlerFunc(BaseHandler(SubscriptionsDestroy))
+	// Sessions routes
+
+	r.HandleFunc("/sessions", BaseHandler(CreateSession)).Methods("POST")
+	r.HandleFunc("/sessions", BaseHandler(DestroySession)).Methods("DELETE")
+
+	// Subscriptions routes
+
+	r.HandleFunc("/subscriptions", BaseHandler(SubscriptionsIndex)).Methods("GET")
+	r.HandleFunc("/subscriptions", BaseHandler(SubscriptionsCreate)).Methods("POST")
+	r.HandleFunc("/subscriptions/{id:[0-9]+}", BaseHandler(SubscriptionsDestroy)).Methods("DELETE")
 
 	// Serve static assets
 
