@@ -11,10 +11,10 @@ func SendPageUpdatedNotification(u *model.User, url string) {
 		mg := mailgun.NewMailgun("nts.mailgun.org", "key-6muwgm3md06odh43loir2bqoa4dws086", "")
 
 		m := mg.NewMessage(
-				"Oscar Swanros <notif@gostalker.com>",        // From
-				"Update!",                    // Subject
-				"The page " + url + " has been updated. Check it out!",                         // Plain-text body
-				"Oscar Swanros <" + u.Email + ">",        // Recipients (vararg list)
+				"Oscar Swanros <notif@gostalker.com>",
+				"Update!",
+				"The page " + url + " has been updated. Check it out!",
+				"Oscar Swanros <" + u.Email + ">",
 		)
 
 		_, _, err := mg.Send(m)

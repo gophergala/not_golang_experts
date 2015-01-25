@@ -17,7 +17,7 @@ type User struct {
 	UpdatedAt         time.Time
 }
 
-func RegisterUser(email string, password string, password_confirmation string, success func(token string), not_success func(message string)) {
+func RegisterUser(email, password, password_confirmation string, success func(token string), not_success func(message string)) {
 	db := conf.SetupDB()
 
 	if userExists(email) {
@@ -40,7 +40,7 @@ func RegisterUser(email string, password string, password_confirmation string, s
 	}
 }
 
-func RegisterUserSession(email string, password string, success func(token string), not_success func(message string)) {
+func RegisterUserSession(email, password string, success func(token string), not_success func(message string)) {
 	db := conf.SetupDB()
 	user := User{}
 	db.Where("email = ?", email).First(&user)
@@ -74,7 +74,7 @@ func FindUserByAuthToken(value string) User {
 	return user
 }
 
-func passwordsMatch(password string, password_confirmation string) bool {
+func passwordsMatch(password, password_confirmation string) bool {
 	return password == password_confirmation && password != ""
 }
 

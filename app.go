@@ -22,12 +22,12 @@ func main() {
 
 	model.DB = db
 
-	stopped := make(chan bool, 1)
-	worker.StartObserving(stopped)
+	stopchan := make(chan bool, 1)
+	worker.StartObserving(stopchan)
 
 	log.Println("Initializing application on port: " + port)
 
 	http.ListenAndServe(":"+port, router.GetRoutes())
 
-	<-stopped
+	<-stopchan
 }
