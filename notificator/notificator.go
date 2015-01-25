@@ -3,7 +3,6 @@ package notificator
 import (
 	"github.com/mailgun/mailgun-go"
 	"log"
-	"strings"
 	"os"
 )
 
@@ -18,8 +17,11 @@ func SendPageUpdatedNotificationToUsers(emails []string, url string) {
 				"GoStalker! :D <notif@gostalker.com>", // From
 				"Update!", // Subject
 				"The page "+url+" has been updated. Check it out!", // Plain-text body
-				strings.Join(emails, ", "),
 			)
+
+			for _, email:= range emails {
+				m.AddBCC(email)
+			}
 
 			_, _, err := mg.Send(m)
 
